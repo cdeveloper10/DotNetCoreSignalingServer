@@ -1,0 +1,453 @@
+using System;
+using System.Collections.Generic;
+using System.Dynamic;
+using System.IO;
+using System.Reflection.Emit;
+using System.Runtime.Serialization.Json;
+using System.Text;
+using System.Threading;
+using WebSocketSharp;
+using WebSocketSharp.Server;
+using System.Xml;
+
+
+namespace Example2
+{
+    
+    public class Echo : WebSocketBehavior
+    {
+        
+        protected override void OnMessage(object sender, MessageEventArgs e)
+        {
+            try
+            {
+                var snd = (sender as WebSocket);
+
+                dynamic ObjSocket = new ExpandoObject();
+                ObjSocket.connection = sender as WebSocket;
+                ObjSocket.name = string.Empty;
+                ObjSocket.otherName = string.Empty;
+
+
+                var clsSerial = new Serialization();
+                BaseObject incType = new Serialization().Deserialize<BaseObject>(e.Data.ToString());
+                if (incType.type == Enumaration.EnumCommand.login.ToString())
+                {
+                    lock (StaticData._lock)
+                    {
+                        var incData = new Serialization().Deserialize<LoginObject>(e.Data.ToString());
+                        incData = new Serialization().Deserialize<LoginObject>(e.Data.ToString());
+                        Console.WriteLine("User logged", incData.name);
+                        //if anyone is logged in with this username then refuse
+
+
+                        if (StaticData.usersStatic.ContainsKey(incData.name))
+                        {
+                            ObjSocket.connection.Send(clsSerial.Serialize(new LoginResult()
+                                {type = "login", success = "false"}));
+                            Console.WriteLine(string.Format("Send Failed Login For User {0}", incData.name));
+                        }
+                        else
+                        {
+                            StaticData.usersStatic.Add(incData.name, ObjSocket);
+                            ObjSocket.name = incData.name;
+                            //save user connection on the server 
+//                    users[data.name] = connection;
+//                    connection.name = data.name;
+
+                            ObjSocket.connection.Send(clsSerial.Serialize(new LoginResult()
+                                {type = "login", success = "true"}));
+                            Console.WriteLine(string.Format("Send Success Login For User {0}", incData.name));
+                        }
+                    }
+                }
+
+                if (incType.type == Enumaration.EnumCommand.offer.ToString())
+                {
+                    lock (StaticData._lock)
+                    {
+                        var incData = new Serialization().Deserialize<OfferObject>(e.Data.ToString());
+                        //for ex. UserA wants to call UserB 
+
+
+                        //if UserB exists then send him offer details 
+                        dynamic Dyncon = StaticData.usersStatic[incData.name];
+
+                        if (Dyncon != null)
+                        {
+                            //setting that UserA connected with UserB
+                            var offResObj = new OfferResult()
+                                {type = "offer", offer = incData.offer, name = Dyncon.name};
+                            Dyncon.otherName = incData.name;
+                            Dyncon.connection.Send(clsSerial.Serialize(offResObj));
+                            Console.WriteLine(string.Format("Sending offer from : {0} to: {1}", incData.Owner,
+                                incData.name));
+                        }
+                    }
+                }
+
+                if (incType.type == Enumaration.EnumCommand.candidate.ToString())
+                {
+                    lock (StaticData._lock)
+                    {
+                        var incData = new Serialization().Deserialize<CandidateObject>(e.Data.ToString());
+                        dynamic Dyncon = StaticData.usersStatic[incData.name];
+
+                        if (Dyncon != null)
+                        {
+                            var candidateResObj = new CandidateResult()
+                                {type = "candidate", candidate = incData.candidate};
+                            Dyncon.connection.Send(clsSerial.Serialize(candidateResObj));
+                            Console.WriteLine("Sending candidate to:", incData.name);
+                        }
+                    }
+                }
+
+
+                if (incType.type == Enumaration.EnumCommand.answer.ToString())
+                {
+                    lock (StaticData._lock)
+                    {
+                        var incData = new Serialization().Deserialize<AnswerObject>(e.Data.ToString());
+                        dynamic Dyncon = StaticData.usersStatic[incData.name];
+                        Console.WriteLine(string.Format("Sending answer to: {0}", incData.name));
+                        //for ex. UserB answers UserA 
+
+                        if (Dyncon != null)
+                        {
+                            Dyncon.connection.Send(clsSerial.Serialize(new AnswerObject()
+                                {type = "answer", answer = incData.answer}));
+                        }
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+                throw;
+            }
+        }
+    }
+}
+
+public class Enumaration
+{
+    public enum EnumCommand
+    {
+        login = 0,
+        offer = 1,
+        answer = 2,
+        candidate = 3,
+        leave = 4,
+    }
+}
+
+public class Serialization
+{
+    public string Serialize<T>(T obj)
+    {
+        DataContractJsonSerializer serializer = new DataContractJsonSerializer(obj.GetType());
+        MemoryStream ms = new MemoryStream();
+        serializer.WriteObject(ms, obj);
+        string retVal = Encoding.UTF8.GetString(ms.ToArray());
+        return retVal;
+    }
+
+    public T Deserialize<T>(string json)
+    {
+        T obj = Activator.CreateInstance<T>();
+        MemoryStream ms = new MemoryStream(Encoding.Unicode.GetBytes(json));
+        DataContractJsonSerializer serializer = new DataContractJsonSerializer(obj.GetType());
+        obj = (T) serializer.ReadObject(ms);
+        ms.Close();
+        return obj;
+    }
+}
+
+#region Base
+
+public class BaseObject
+{
+    string _type;
+
+    public string type
+    {
+        get { return _type; }
+        set { _type = value; }
+    }
+}
+
+#endregion
+
+#region Login
+
+public class LoginObject
+{
+    string _type;
+    string _name;
+
+    public string type
+    {
+        get { return _type; }
+        set { _type = value; }
+    }
+
+    public string name
+    {
+        get { return _name; }
+        set { _name = value; }
+    }
+}
+
+public class LoginResult
+{
+    string _type;
+    string _success;
+
+    public string type
+    {
+        get { return _type; }
+        set { _type = value; }
+    }
+
+    public string success
+    {
+        get { return _success; }
+        set { _success = value; }
+    }
+}
+
+#endregion
+
+#region Offer
+
+public class Offer
+{
+    private string _type;
+    private string _sdp;
+
+    public string type
+    {
+        get { return _type; }
+        set { _type = value; }
+    }
+
+    public string sdp
+    {
+        get { return _sdp; }
+        set { _sdp = value; }
+    }
+}
+
+public class OfferObject
+{
+    private string _type;
+    private Offer _offer;
+    private string _name;
+    private string _owner;
+
+    public string type
+    {
+        get { return _type; }
+        set { _type = value; }
+    }
+
+    public Offer offer
+    {
+        get { return _offer; }
+        set { _offer = value; }
+    }
+
+    public string name
+    {
+        get { return _name; }
+        set { _name = value; }
+    }
+
+    public string Owner
+    {
+        get { return _owner; }
+        set { _owner = value; }
+    }
+}
+
+public class OfferResult
+{
+    private string _type;
+    private Offer _offer;
+    private string _name;
+
+    public string type
+    {
+        get { return _type; }
+        set { _type = value; }
+    }
+
+    public Offer offer
+    {
+        get { return _offer; }
+        set { _offer = value; }
+    }
+
+    public string name
+    {
+        get { return _name; }
+        set { _name = value; }
+    }
+}
+
+#endregion
+
+
+#region Candidate
+
+public class Candidate
+{
+    private string _usernameFragment;
+    private int _sdpMLineIndex;
+    private string _candidate;
+    private string _sdpMid;
+
+    public string candidate
+    {
+        get { return _candidate; }
+        set { _candidate = value; }
+    }
+
+    public string sdpMid
+    {
+        get { return _sdpMid; }
+        set { _sdpMid = value; }
+    }
+
+    public int sdpMLineIndex
+    {
+        get { return _sdpMLineIndex; }
+        set { _sdpMLineIndex = value; }
+    }
+
+    public string usernameFragment
+    {
+        get { return _usernameFragment; }
+        set { _usernameFragment = value; }
+    }
+}
+
+public class CandidateObject
+{
+    private string _name;
+    private Candidate _candidate;
+    private string _type;
+    private string _owner;
+
+    public string type
+    {
+        get { return _type; }
+        set { _type = value; }
+    }
+
+    public Candidate candidate
+    {
+        get { return _candidate; }
+        set { _candidate = value; }
+    }
+
+    public string name
+    {
+        get { return _name; }
+        set { _name = value; }
+    }
+
+    public string Owner
+    {
+        get { return _owner; }
+        set { _owner = value; }
+    }
+}
+
+public class CandidateResult
+{
+    private string _type;
+    private Candidate _candidate;
+    private string _name;
+
+    public string type
+    {
+        get { return _type; }
+        set { _type = value; }
+    }
+
+    public Candidate candidate
+    {
+        get { return _candidate; }
+        set { _candidate = value; }
+    }
+}
+
+#endregion
+
+
+#region Answer
+
+public class Answer
+{
+    private string _sdp;
+    private string _type;
+
+    public string type
+    {
+        get { return _type; }
+        set { _type = value; }
+    }
+
+    public string sdp
+    {
+        get { return _sdp; }
+        set { _sdp = value; }
+    }
+}
+
+public class AnswerObject
+{
+    private string _owner;
+    private string _name;
+    private Answer _answer;
+    private string _type;
+
+    public string type
+    {
+        get { return _type; }
+        set { _type = value; }
+    }
+
+    public Answer answer
+    {
+        get { return _answer; }
+        set { _answer = value; }
+    }
+
+    public string name
+    {
+        get { return _name; }
+        set { _name = value; }
+    }
+
+    public string owner
+    {
+        get { return _owner; }
+        set { _owner = value; }
+    }
+}
+
+#endregion
+
+
+#region Statics
+
+public static class StaticData
+{
+    public static object _lock = new Object();
+    public static IDictionary<string, dynamic> usersStatic = new Dictionary<string, dynamic>();
+}
+
+#endregion
