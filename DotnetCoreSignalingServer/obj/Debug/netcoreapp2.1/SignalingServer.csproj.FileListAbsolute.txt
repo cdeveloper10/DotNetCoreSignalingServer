@@ -1,0 +1,14 @@
+C:\Users\a.sharafi\Documents\GitHub\DotNetCore-Signaling-Server\DotnetCoreSignalingServer\obj\Debug\netcoreapp2.1\SignalingServer.csproj.CoreCompileInputs.cache
+C:\Users\a.sharafi\Documents\GitHub\DotNetCore-Signaling-Server\DotnetCoreSignalingServer\obj\Debug\netcoreapp2.1\SignalingServer.RazorAssemblyInfo.cache
+C:\Users\a.sharafi\Documents\GitHub\DotNetCore-Signaling-Server\DotnetCoreSignalingServer\obj\Debug\netcoreapp2.1\SignalingServer.RazorAssemblyInfo.cs
+C:\Users\a.sharafi\Documents\GitHub\DotNetCore-Signaling-Server\DotnetCoreSignalingServer\obj\Debug\netcoreapp2.1\SignalingServer.AssemblyInfoInputs.cache
+C:\Users\a.sharafi\Documents\GitHub\DotNetCore-Signaling-Server\DotnetCoreSignalingServer\obj\Debug\netcoreapp2.1\SignalingServer.AssemblyInfo.cs
+C:\Users\a.sharafi\Documents\GitHub\DotNetCore-Signaling-Server\DotnetCoreSignalingServer\bin\Debug\netcoreapp2.1\SignalingServer.deps.json
+C:\Users\a.sharafi\Documents\GitHub\DotNetCore-Signaling-Server\DotnetCoreSignalingServer\bin\Debug\netcoreapp2.1\SignalingServer.runtimeconfig.json
+C:\Users\a.sharafi\Documents\GitHub\DotNetCore-Signaling-Server\DotnetCoreSignalingServer\bin\Debug\netcoreapp2.1\SignalingServer.runtimeconfig.dev.json
+C:\Users\a.sharafi\Documents\GitHub\DotNetCore-Signaling-Server\DotnetCoreSignalingServer\bin\Debug\netcoreapp2.1\SignalingServer.dll
+C:\Users\a.sharafi\Documents\GitHub\DotNetCore-Signaling-Server\DotnetCoreSignalingServer\bin\Debug\netcoreapp2.1\SignalingServer.pdb
+C:\Users\a.sharafi\Documents\GitHub\DotNetCore-Signaling-Server\DotnetCoreSignalingServer\obj\Debug\netcoreapp2.1\SignalingServer.RazorTargetAssemblyInfo.cache
+C:\Users\a.sharafi\Documents\GitHub\DotNetCore-Signaling-Server\DotnetCoreSignalingServer\obj\Debug\netcoreapp2.1\SignalingServer.dll
+C:\Users\a.sharafi\Documents\GitHub\DotNetCore-Signaling-Server\DotnetCoreSignalingServer\obj\Debug\netcoreapp2.1\SignalingServer.pdb
+C:\Users\a.sharafi\Documents\GitHub\DotNetCore-Signaling-Server\DotnetCoreSignalingServer\obj\Debug\netcoreapp2.1\SignalingServer.csprojAssemblyReference.cache

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Internal;
 
-namespace EchoApp.Library.Helper
+namespace SignalingServer.Library.Helper
 {
     public static class StringHelper
     {

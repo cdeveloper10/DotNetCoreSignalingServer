@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2002
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EchoApp", "EchoApp.csproj", "{41868155-5869-48AD-A335-8EE4EEF58D95}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SignalingServer", "SignalingServer.csproj", "{41868155-5869-48AD-A335-8EE4EEF58D95}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

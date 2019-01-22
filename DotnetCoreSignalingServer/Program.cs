@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace Services
+
+namespace SignalingServer
 {
     public class Program
     {

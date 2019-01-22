@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Services.Model.Signaling
+namespace SignalingServer.Model.Signaling
 {
     public class Offer
     {

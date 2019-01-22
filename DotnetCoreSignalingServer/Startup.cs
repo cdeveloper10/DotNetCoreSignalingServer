@@ -6,8 +6,10 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SignalingServer.Services;
+
 //Version 1
-namespace Services
+namespace SignalingServer
 {
     public class Startup
     {

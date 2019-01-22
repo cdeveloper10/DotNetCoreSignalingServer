@@ -6,7 +6,7 @@ using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services.Library.Helper
+namespace SignalingServer.Library.Helper
 {
     public static class ObjectHelper
     {

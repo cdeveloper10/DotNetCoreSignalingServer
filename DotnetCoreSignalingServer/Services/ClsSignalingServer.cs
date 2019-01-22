@@ -5,14 +5,14 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using EchoApp.Library.Helper;
-using EchoApp.Model.Signaling;
-using EchoApp.Services;
-using Services.Library.Helper;
-using Services.Model.Signaling;
+using SignalingServer.Library.Helper;
+using SignalingServer.Model.Signaling;
+using SignalingServer.Services;
+using SignalingServer.Library.Helper;
+using SignalingServer.Model.Signaling;
 using Microsoft.AspNetCore.Http;
 
-namespace Services
+namespace SignalingServer.Services
 {
     public class ClsSignalingHandler
     {
